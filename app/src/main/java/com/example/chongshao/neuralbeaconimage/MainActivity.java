@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import org.tensorflow.contrib.android.TensorFlowInferenceInterface;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -18,6 +19,9 @@ public class MainActivity extends AppCompatActivity {
     int[] intValues;
     float[] floatValues;
     int desiredSize = 256;
+
+
+    TensorFlowInferenceInterface inferenceInterface;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,7 +39,6 @@ public class MainActivity extends AppCompatActivity {
         intValues = new int[desiredSize * desiredSize];
         floatValues = new float[desiredSize * desiredSize *3];
 
-        TensorFlowInferenceInterface inferenceInterface;
 
         enhanceButton1.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -51,13 +54,12 @@ public class MainActivity extends AppCompatActivity {
                     floatValues[i * 3 + 1] = ((val >> 8) & 0xFF) / 255.0f;
                     floatValues[i * 3 + 2] = (val & 0xFF) / 255.0f;
                 }
+
                 inferenceInterface.feed(INPUT_NODE, floatValues, 1, inputImage.getWidth(), inputImage.getHeight(), 3);
                 inferenceInterface.feed(STYLE_NODE, styleValues, NUM_STYLES);
 
                 inferenceInterface.run(new String[]{OUTPUT_NODE}, isDebug());;
                 inferenceInterface.fetch(OUTPUT_NODE, floatValues);
-
-
 
                 for (int i = 0; i < intValues.length; ++i) {
                     intValues[i] =
