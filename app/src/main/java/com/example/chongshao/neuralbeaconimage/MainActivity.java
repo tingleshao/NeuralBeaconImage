@@ -15,6 +15,10 @@ public class MainActivity extends AppCompatActivity {
     Button enhanceButton2;
     Button enhanceButton3;
 
+    int[] intValues;
+    float[] floatValues;
+    int desiredSize = 256;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -26,14 +30,44 @@ public class MainActivity extends AppCompatActivity {
         enhanceButton2 = (Button)this.findViewById(R.id.button3);
         enhanceButton3 = (Button)this.findViewById(R.id.button4);
 
-        // TODO: click the button will run a style transfer model
-        // TODO: before that we need to do fast marker style transfer model
+        // TODO: we need to do fast marker style transfer model
+
+        intValues = new int[desiredSize * desiredSize];
+        floatValues = new float[desiredSize * desiredSize *3];
+
+        TensorFlowInferenceInterface inferenceInterface;
 
         enhanceButton1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                // TODO: this image size should be 256 * 256?
                 Bitmap inputImage = BitmapFactory.decodeResource(getResources(), R.drawable.tubingen);
-                
+                Bitmap outputImage = Bitmap.createBitmap(inputImage);
+                inputImage.getPixels(intValues, 0, inputImage.getWidth(), 0, 0, inputImage.getWidth(), inputImage.getHeight());
+
+                for (int i = 0; i < intValues.length; ++i) {
+                    final int val = intValues[i];
+                    floatValues[i * 3] = ((val >> 16) & 0xFF) / 255.0f;
+                    floatValues[i * 3 + 1] = ((val >> 8) & 0xFF) / 255.0f;
+                    floatValues[i * 3 + 2] = (val & 0xFF) / 255.0f;
+                }
+                inferenceInterface.feed(INPUT_NODE, floatValues, 1, inputImage.getWidth(), inputImage.getHeight(), 3);
+                inferenceInterface.feed(STYLE_NODE, styleValues, NUM_STYLES);
+
+                inferenceInterface.run(new String[]{OUTPUT_NODE}, isDebug());;
+                inferenceInterface.fetch(OUTPUT_NODE, floatValues);
+
+
+
+                for (int i = 0; i < intValues.length; ++i) {
+                    intValues[i] =
+                            0xFF000000
+                                    | (((int) (floatValues[i * 3] * 255)) << 16)
+                                    | (((int) (floatValues[i * 3 + 1] * 255)) << 8)
+                                    | ((int) (floatValues[i * 3 + 2] * 255));
+                }
+
+                outputImage.setPixels(intValues, 0, outputImage.getWidth(), 0, 0, outputImage.getWidth(), outputImage.getHeight());
             }
         });
     }
