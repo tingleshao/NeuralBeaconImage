@@ -17,8 +17,8 @@
         android:layout_height="wrap_content"
         android:id="@+id/button"
         android:layout_centerVertical="true"
-        android:layout_alignLeft="@+id/imageView"
-        android:layout_alignStart="@+id/imageView" />
+        android:layout_alignLeft="@+id/inputImageView"
+        android:layout_alignStart="@+id/inputImageView" />
 
     <Button
         android:text="Enhance 2"
@@ -32,7 +32,7 @@
 
     <ImageView
         app:srcCompat="@mipmap/ic_launcher"
-        android:id="@+id/imageView"
+        android:id="@+id/inputImageView"
         android:layout_marginLeft="31dp"
         android:layout_marginStart="31dp"
         android:layout_alignParentTop="true"
@@ -45,30 +45,11 @@
         android:layout_width="64dp"
         android:layout_height="64dp"
         app:srcCompat="@mipmap/ic_launcher"
-        android:id="@+id/imageView2"
+        android:id="@+id/enhance1ImageView"
         android:layout_marginTop="22dp"
-        android:layout_below="@+id/imageView"
-        android:layout_alignLeft="@+id/imageView"
-        android:layout_alignStart="@+id/imageView" />
-
-    <ImageView
-        android:layout_width="64dp"
-        android:layout_height="64dp"
-        app:srcCompat="@mipmap/ic_launcher"
-        android:id="@+id/imageView3"
-        android:layout_alignTop="@+id/imageView4"
-        android:layout_toRightOf="@+id/imageView4"
-        android:layout_toEndOf="@+id/imageView4"
-        android:layout_marginLeft="32dp"
-        android:layout_marginStart="32dp" />
-
-    <ImageView
-        android:layout_width="64dp"
-        android:layout_height="64dp"
-        app:srcCompat="@mipmap/ic_launcher"
-        android:id="@+id/imageView4"
-        android:layout_alignTop="@+id/imageView2"
-        android:layout_centerHorizontal="true" />
+        android:layout_below="@+id/inputImageView"
+        android:layout_alignLeft="@+id/inputImageView"
+        android:layout_alignStart="@+id/inputImageView" />
 
     <Button
         android:text="Enhance 1"
@@ -89,4 +70,23 @@
         android:layout_marginBottom="12dp"
         android:layout_marginTop="420dp"
         android:layout_marginLeft="40dp" />
+
+    <ImageView
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        app:srcCompat="@mipmap/ic_launcher"
+        android:id="@+id/enhance2ImageView"
+        android:layout_alignTop="@+id/enhance1ImageView"
+        android:layout_centerHorizontal="true" />
+
+    <ImageView
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        app:srcCompat="@mipmap/ic_launcher"
+        android:id="@+id/enhance3ImageView"
+        android:layout_marginLeft="32dp"
+        android:layout_marginStart="32dp"
+        android:layout_alignTop="@+id/enhance2ImageView"
+        android:layout_toRightOf="@+id/enhance2ImageView"
+        android:layout_toEndOf="@+id/enhance2ImageView" />
 </RelativeLayout>
