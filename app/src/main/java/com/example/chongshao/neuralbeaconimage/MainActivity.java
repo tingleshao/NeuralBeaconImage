@@ -21,6 +21,13 @@ public class MainActivity extends AppCompatActivity {
 
 
     TensorFlowInferenceInterface inferenceInterface;
+    private static final String MODEL_FILE = "file:///android_asset/stylize_quantized.pb";
+    private static final String INPUT_NODE = "input";
+    private static final String STYLE_NODE = "style_num";
+    private static final String OUTPUT_NODE = "transformer/expand/conv3/conv/Sigmoid";
+    private static final int NUM_STYLES = 26;
+
+    private final float[] styleVals = new float[NUM_STYLES];
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,7 +62,7 @@ public class MainActivity extends AppCompatActivity {
                 }
 
                 inferenceInterface.feed(INPUT_NODE, floatValues, 1, inputImage.getWidth(), inputImage.getHeight(), 3);
-                inferenceInterface.feed(STYLE_NODE, styleValues, NUM_STYLES);
+                inferenceInterface.feed(STYLE_NODE, styleVals, NUM_STYLES);
 
                 inferenceInterface.run(new String[]{OUTPUT_NODE}, isDebug());;
                 inferenceInterface.fetch(OUTPUT_NODE, floatValues);
@@ -72,4 +79,9 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
+    public boolean isDebug() {
+        return true;
+    }
+
 }
