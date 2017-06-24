@@ -21,6 +21,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     TensorFlowInferenceInterface inferenceInterface;
+    // TODO: initialize the inferenceInterface
     private static final String MODEL_FILE = "file:///android_asset/stylize_quantized.pb";
     private static final String INPUT_NODE = "input";
     private static final String STYLE_NODE = "style_num";
@@ -34,6 +35,10 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // TODO: we need to do fast marker style transfer model
+        intValues = new int[desiredSize * desiredSize];
+        floatValues = new float[desiredSize * desiredSize *3];
+
         // buttons
         // TODO: click this button, load the image
         selectImageButton = (Button)this.findViewById(R.id.button);
@@ -43,20 +48,16 @@ public class MainActivity extends AppCompatActivity {
         enhanceButton2 = (Button)this.findViewById(R.id.button3);
         enhanceButton3 = (Button)this.findViewById(R.id.button4);
 
-        // TODO: we need to do fast marker style transfer model
-
-        intValues = new int[desiredSize * desiredSize];
-        floatValues = new float[desiredSize * desiredSize *3];
-
-        // TODO: try the example style transfer
         enhanceButton1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TODO: this image size should be 256 * 256?
-                Bitmap inputImage = BitmapFactory.decodeResource(getResources(), R.drawable.tubingen);
+                Bitmap inputImage = BitmapFactory.decodeResource(getResources(), R.drawable.tubingen_resize);
                 Bitmap outputImage = Bitmap.createBitmap(inputImage);
+
+                // send the pixels to intValues
                 inputImage.getPixels(intValues, 0, inputImage.getWidth(), 0, 0, inputImage.getWidth(), inputImage.getHeight());
 
+                // process the pixel values, send to floatValues
                 for (int i = 0; i < intValues.length; ++i) {
                     final int val = intValues[i];
                     floatValues[i * 3] = ((val >> 16) & 0xFF) / 255.0f;
@@ -64,6 +65,7 @@ public class MainActivity extends AppCompatActivity {
                     floatValues[i * 3 + 2] = (val & 0xFF) / 255.0f;
                 }
 
+                // fered the
                 inferenceInterface.feed(INPUT_NODE, floatValues, 1, inputImage.getWidth(), inputImage.getHeight(), 3);
                 inferenceInterface.feed(STYLE_NODE, styleVals, NUM_STYLES);
 
@@ -78,6 +80,7 @@ public class MainActivity extends AppCompatActivity {
                                     | ((int) (floatValues[i * 3 + 2] * 255));
                 }
 
+                // TODO: send the image to imageView, please 
                 outputImage.setPixels(intValues, 0, outputImage.getWidth(), 0, 0, outputImage.getWidth(), outputImage.getHeight());
             }
         });
@@ -86,5 +89,4 @@ public class MainActivity extends AppCompatActivity {
     public boolean isDebug() {
         return true;
     }
-
 }
