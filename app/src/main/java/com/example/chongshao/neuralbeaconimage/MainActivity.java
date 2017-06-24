@@ -35,7 +35,10 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         // buttons
+        // TODO: click this button, load the image
         selectImageButton = (Button)this.findViewById(R.id.button);
+
+        // TODO: click button1, show the style transferred image
         enhanceButton1 = (Button)this.findViewById(R.id.button2);
         enhanceButton2 = (Button)this.findViewById(R.id.button3);
         enhanceButton3 = (Button)this.findViewById(R.id.button4);
@@ -45,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
         intValues = new int[desiredSize * desiredSize];
         floatValues = new float[desiredSize * desiredSize *3];
 
-
+        // TODO: try the example style transfer
         enhanceButton1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
