@@ -5,6 +5,7 @@ import android.graphics.BitmapFactory;
 import android.media.Image;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -62,9 +63,12 @@ public class MainActivity extends AppCompatActivity {
         enhanceButton1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Bitmap inputImage = BitmapFactory.decodeResource(getResources(), R.drawable.tubingen_resize);
-                Bitmap outputImage = Bitmap.createBitmap(inputImage);
 
+                BitmapFactory.Options options = new BitmapFactory.Options();
+                options.inScaled = false;
+                Bitmap inputImage = BitmapFactory.decodeResource(getResources(), R.drawable.tubingen_resize, options);
+                Bitmap outputImage = Bitmap.createBitmap(inputImage);
+                Log.d("DDL", "image width: " + Integer.toString(inputImage.getWidth()));
                 inputImageView.setImageBitmap(inputImage);
 
                 // send the pixels to intValues
@@ -85,6 +89,7 @@ public class MainActivity extends AppCompatActivity {
                 inferenceInterface.run(new String[]{OUTPUT_NODE}, isDebug());;
                 inferenceInterface.fetch(OUTPUT_NODE, floatValues);
 
+                // convert float values back to int values 
                 for (int i = 0; i < intValues.length; ++i) {
                     intValues[i] =
                             0xFF000000
