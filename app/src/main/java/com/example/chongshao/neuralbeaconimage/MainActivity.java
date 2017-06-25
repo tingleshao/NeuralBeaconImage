@@ -2,6 +2,7 @@ package com.example.chongshao.neuralbeaconimage;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.media.Image;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -11,6 +12,8 @@ import android.widget.Button;
 import android.widget.ImageView;
 
 import org.tensorflow.contrib.android.TensorFlowInferenceInterface;
+
+import java.nio.IntBuffer;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -67,8 +70,14 @@ public class MainActivity extends AppCompatActivity {
                 BitmapFactory.Options options = new BitmapFactory.Options();
                 options.inScaled = false;
                 Bitmap inputImage = BitmapFactory.decodeResource(getResources(), R.drawable.tubingen_resize, options);
-                Bitmap outputImage = Bitmap.createBitmap(inputImage);
+                final Bitmap outputImage = Bitmap.createBitmap(inputImage);
+                for(int i = 0; i < inputImage.getWidth(); i++) {
+                    for (int j = 0; j < inputImage.getHeight(); j++) {
+                        Log.d("DDL", "values: " + Integer.toString(inputImage.getPixel(j, i)));
+                    }
+                }
                 Log.d("DDL", "image width: " + Integer.toString(inputImage.getWidth()));
+
                 inputImageView.setImageBitmap(inputImage);
 
                 // send the pixels to intValues
@@ -89,7 +98,7 @@ public class MainActivity extends AppCompatActivity {
                 inferenceInterface.run(new String[]{OUTPUT_NODE}, isDebug());;
                 inferenceInterface.fetch(OUTPUT_NODE, floatValues);
 
-                // convert float values back to int values 
+                // convert float values back to int values
                 for (int i = 0; i < intValues.length; ++i) {
                     intValues[i] =
                             0xFF000000
@@ -98,7 +107,10 @@ public class MainActivity extends AppCompatActivity {
                                     | ((int) (floatValues[i * 3 + 2] * 255));
                 }
 
-                outputImage.setPixels(intValues, 0, outputImage.getWidth(), 0, 0, outputImage.getWidth(), outputImage.getHeight());
+            //    Canvas c = new Canvas(outputImage);
+             //  c.drawBitmap(input);
+                outputImage.copyPixelsFromBuffer(IntBuffer.wrap(intValues));
+             //   outputImage.setPixels(intValues, 0, outputImage.getWidth(), 0, 0, outputImage.getWidth(), outputImage.getHeight());
                 enhance1ImageView.setImageBitmap(outputImage);
             }
         });
