@@ -71,11 +71,15 @@ public class MainActivity extends AppCompatActivity {
                 options.inScaled = false;
                 Bitmap inputImage = BitmapFactory.decodeResource(getResources(), R.drawable.tubingen_resize, options);
                 final Bitmap outputImage = Bitmap.createBitmap(inputImage);
-                for(int i = 0; i < inputImage.getWidth(); i++) {
-                    for (int j = 0; j < inputImage.getHeight(); j++) {
-                        Log.d("DDL", "values: " + Integer.toString(inputImage.getPixel(j, i)));
-                    }
-                }
+//                for(int i = 0; i < inputImage.getWidth(); i++) {
+//                    for (int j = 0; j < inputImage.getHeight(); j++) {
+//                        int p = inputImage.getPixel(j, i);
+//                        int R = (p & 0xff0000) >> 16;
+//                        int G = (p & 0x00ff00) >> 8;
+//                        int B = (p & 0x0000ff) >> 0;
+//                        Log.d("DDL", "values: " + Integer.toString(R) + " " + Integer.toString(G) + " " + Integer.toString(B));
+//                    }
+//                }
                 Log.d("DDL", "image width: " + Integer.toString(inputImage.getWidth()));
 
                 inputImageView.setImageBitmap(inputImage);
@@ -97,7 +101,23 @@ public class MainActivity extends AppCompatActivity {
 
                 inferenceInterface.run(new String[]{OUTPUT_NODE}, isDebug());;
                 inferenceInterface.fetch(OUTPUT_NODE, floatValues);
+                for(int i = 0; i < inputImage.getWidth(); i++) {
+                    for (int j = 0; j < inputImage.getHeight(); j++) {
+//                        int p = intValues[i*inputImage.getHeight() + j];
+//                        int R = (p & 0xff0000) >> 16;
+//                        int G = (p & 0x00ff00) >> 8;
+//                        int B = (p & 0x0000ff) >> 0;
+                        int k = i * inputImage.getHeight() + j;
 
+                        float R = floatValues[k * 3];
+                        float G = floatValues[k * 3 + 2];
+                        float B = floatValues[k * 3 + 2];
+
+                        Log.d("DDL", "values: " + Float.toString(R) + " " + Float.toString(G) + " " + Float.toString(B));
+//                    }
+//                }
+                    }
+                }
                 // convert float values back to int values
                 for (int i = 0; i < intValues.length; ++i) {
                     intValues[i] =
@@ -106,10 +126,18 @@ public class MainActivity extends AppCompatActivity {
                                     | (((int) (floatValues[i * 3 + 1] * 255)) << 8)
                                     | ((int) (floatValues[i * 3 + 2] * 255));
                 }
-
+//                for(int i = 0; i < inputImage.getWidth(); i++) {
+//                    for (int j = 0; j < inputImage.getHeight(); j++) {
+//                        int p = intValues[i*inputImage.getHeight() + j];
+//                        int R = (p & 0xff0000) >> 16;
+//                        int G = (p & 0x00ff00) >> 8;
+//                        int B = (p & 0x0000ff) >> 0;
+//                        Log.d("DDL", "values: " + Integer.toString(R) + " " + Integer.toString(G) + " " + Integer.toString(B));
+//                    }
+//                }
             //    Canvas c = new Canvas(outputImage);
              //  c.drawBitmap(input);
-                outputImage.copyPixelsFromBuffer(IntBuffer.wrap(intValues));
+         //       outputImage.copyPixelsFromBuffer(IntBuffer.wrap(intValues));
              //   outputImage.setPixels(intValues, 0, outputImage.getWidth(), 0, 0, outputImage.getWidth(), outputImage.getHeight());
                 enhance1ImageView.setImageBitmap(outputImage);
             }
