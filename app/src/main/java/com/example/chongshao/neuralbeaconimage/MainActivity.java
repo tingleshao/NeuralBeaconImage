@@ -46,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        styleVals[0] = 1.0f;
         // ImageViews
         inputImageView = (ImageView)this.findViewById(R.id.inputImageView);
         enhance1ImageView = (ImageView)this.findViewById(R.id.enhance1ImageView);
@@ -70,7 +70,7 @@ public class MainActivity extends AppCompatActivity {
                 BitmapFactory.Options options = new BitmapFactory.Options();
                 options.inScaled = false;
                 Bitmap inputImage = BitmapFactory.decodeResource(getResources(), R.drawable.tubingen_resize, options);
-                final Bitmap outputImage = Bitmap.createBitmap(inputImage);
+                final Bitmap outputImage = Bitmap.createBitmap(256,256,inputImage.getConfig());
 //                for(int i = 0; i < inputImage.getWidth(); i++) {
 //                    for (int j = 0; j < inputImage.getHeight(); j++) {
 //                        int p = inputImage.getPixel(j, i);
@@ -95,12 +95,13 @@ public class MainActivity extends AppCompatActivity {
                     floatValues[i * 3 + 2] = (val & 0xFF) / 255.0f;
                 }
 
-                // fered the
+                // feed the float values into neural network
                 inferenceInterface.feed(INPUT_NODE, floatValues, 1, inputImage.getWidth(), inputImage.getHeight(), 3);
                 inferenceInterface.feed(STYLE_NODE, styleVals, NUM_STYLES);
 
                 inferenceInterface.run(new String[]{OUTPUT_NODE}, isDebug());;
                 inferenceInterface.fetch(OUTPUT_NODE, floatValues);
+
                 for(int i = 0; i < inputImage.getWidth(); i++) {
                     for (int j = 0; j < inputImage.getHeight(); j++) {
 //                        int p = intValues[i*inputImage.getHeight() + j];
@@ -137,7 +138,7 @@ public class MainActivity extends AppCompatActivity {
 //                }
             //    Canvas c = new Canvas(outputImage);
              //  c.drawBitmap(input);
-         //       outputImage.copyPixelsFromBuffer(IntBuffer.wrap(intValues));
+                outputImage.copyPixelsFromBuffer(IntBuffer.wrap(intValues));
              //   outputImage.setPixels(intValues, 0, outputImage.getWidth(), 0, 0, outputImage.getWidth(), outputImage.getHeight());
                 enhance1ImageView.setImageBitmap(outputImage);
             }
