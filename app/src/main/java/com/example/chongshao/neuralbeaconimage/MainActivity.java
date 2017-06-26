@@ -15,6 +15,8 @@ import org.tensorflow.contrib.android.TensorFlowInferenceInterface;
 
 import java.nio.IntBuffer;
 
+
+// TODO: integrate superresoutions
 public class MainActivity extends AppCompatActivity {
 
     Button selectImageButton;
